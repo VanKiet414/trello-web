@@ -1,6 +1,5 @@
 import { experimental_extendTheme as extendTheme } from '@mui/material/styles'
 import { deepOrange, cyan, teal, orange } from '@mui/material/colors'
-import { Height } from '@mui/icons-material'
 
 
 // Tạo một theme instance.
