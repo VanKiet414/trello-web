@@ -1,6 +1,5 @@
 import Box from '@mui/material/Box'
 import Card from './Card/Card'
-import Column from '../Column'
 
 function ListCards({ cards }) {
   return (
