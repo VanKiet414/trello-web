@@ -1,4 +1,4 @@
-import React from 'react'
+//import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from '~/App.jsx'
 import CssBaseline from '@mui/material/CssBaseline'
@@ -6,10 +6,10 @@ import { Experimental_CssVarsProvider as CssVarProvider } from '@mui/material/st
 import theme from '~/theme'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <CssVarProvider theme={theme}>
-      <CssBaseline />
-      <App />
-    </CssVarProvider>
-  </React.StrictMode>
+  //<React.StrictMode>
+  <CssVarProvider theme={theme}>
+    <CssBaseline />
+    <App />
+  </CssVarProvider>
+  //</React.StrictMode>
 )
