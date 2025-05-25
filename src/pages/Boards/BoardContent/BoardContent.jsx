@@ -2,7 +2,7 @@ import Box from '@mui/material/Box'
 import ListColumns from './ListColumns/ListColumns'
 import { mapOrder } from '~/utils/sorts'
 
-import { DndContext, /*PointerSensor,*/ MouseSensor, TouchSensor, useSensor, useSensors, DragOverlay, defaultDropAnimationSideEffects, closestCorners, closestCenter, pointerWithin, rectIntersection, getFirstCollision } from '@dnd-kit/core'
+import { DndContext, /*PointerSensor,*/ MouseSensor, TouchSensor, useSensor, useSensors, DragOverlay, defaultDropAnimationSideEffects, closestCorners, /*closestCenter,*/ pointerWithin, /*rectIntersection,*/ getFirstCollision } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { cloneDeep } from 'lodash'
@@ -271,25 +271,31 @@ function BoardContent( { board } ) {
       return closestCorners({ ...args })
     }
 
-    // Tìm các điẻm giao nhau, va chạm - intersections với con trỏ
+    // Tìm các điẻm giao nhau, va chạm, trả về một mảng các va chạm - intersections với con trỏ
     const pointerIntersections = pointerWithin(args)
 
-    // Thuật toán phát hiện va chạm sẽ trả về một mảng các va chạm ở đây
-    const intersections = pointerIntersections?.length > 0
-      ? pointerIntersections
-      : rectIntersection(args)
+    // Video 37.1: Nếu pointerIntersections là mảng rỗng, return luôn không làm gì hết.
+    // Fix triệt để cái bug flickering của thư viện Dnd-Kit trong trường hợp sau:
+    // - Kéo một cái card có image cover lớn và kéo lên phía trên cũng ra khỏi khu vực kéo thả
+    if (!pointerIntersections?.length) return
 
-    // Tìm overId đầu tiên trong đám intersections ở trên
-    let overId = getFirstCollision(intersections, 'id')
+    // Thuật toán phát hiện va chạm sẽ trả về một mảng các va chạm ở đây (không cần bước này nữa - video 37.1)
+    /* const intersections = !!pointerIntersections?.length
+      ? pointerIntersections
+      : rectIntersection(args) */
+
+    // Tìm overId đầu tiên trong đám pointerIntersections ở trên
+    let overId = getFirstCollision(pointerIntersections, 'id')
     if (overId) {
       // Video 37: Đoạn này để fix cái vụ flickering nhé.
       // Nếu cái over nó là column thì sẽ tìm tới cái cardId gần nhất bên trong khu vực va chạm dựa vào
       // thuật toán phát hiện va chạm closestCenter hoặc closestCorners đều được. Tuy nhiên ở đây dùng
-      // closestCenter mình thấy mượt mà hơn.
+      // closestCorners mình thấy mượt mà hơn.
+      // Nếu không có đoạn checkColumn này thì bug flickering vẫn fix được rồi nhưng mà kéo thả sẽ rất giật lag
       const checkColumn = orderedColumns.find(column => column._id === overId)
       if (checkColumn) {
         //console.log('overId before:', overId)
-        overId = closestCenter({
+        overId = closestCorners({
           ...args,
           droppableContainers: args.droppableContainers.filter(container => {
             return (container.id !== overId) && (checkColumn?.cardOrderIds?.includes(container.id))
