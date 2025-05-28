@@ -5,7 +5,8 @@ import { mapOrder } from '~/utils/sorts'
 import { DndContext, /*PointerSensor,*/ MouseSensor, TouchSensor, useSensor, useSensors, DragOverlay, defaultDropAnimationSideEffects, closestCorners, /*closestCenter,*/ pointerWithin, /*rectIntersection,*/ getFirstCollision } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
 import { useEffect, useState, useCallback, useRef } from 'react'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, isEmpty } from 'lodash'
+import { generatePlaceholderCard } from '~/utils/formatters'
 
 
 import Column from './ListColumns/Column/Column'
@@ -84,6 +85,13 @@ function BoardContent( { board } ) {
       if (netxActiveColumn) {
         // Xóa card khỏi column hiện tại (cũng có thể hiểu là column cũ – nơi card bị kéo ra để chuyển sang column khác).
         netxActiveColumn.cards = netxActiveColumn.cards.filter(card => card._id !== activeDraggingCardId)
+
+        // Thêm Placeholder Card nếu Column rỗng: Bị kéo hết Card đi, không còn cái nào nữa. (Video 37.2)
+        if (isEmpty(netxActiveColumn.cards)) {
+          console.log('card cuoi cung bi keo di')
+          netxActiveColumn.cards = [generatePlaceholderCard(netxActiveColumn)]
+        }
+
         // Cập nhật lại mảng cardOrderIds cho chuẩn dữ liệu
         netxActiveColumn.cardsOrderIds = netxActiveColumn.cards.map(card => card._id)
       }
@@ -98,12 +106,19 @@ function BoardContent( { board } ) {
           ...activeDraggingCardData,
           columnId: netxOverColumn._id
         }
+
         // Tiếp theo là thêm cái card đang kéo vào overColumn theo vị trí index mới
         netxOverColumn.cards = netxOverColumn.cards.toSpliced(newCardIndex, 0, rebuild_activeDraggingCardData)
+
+        // Xóa cái Placeholder Card đi nếu nó đang tồn tại video (37.2)
+        netxOverColumn.cards = netxOverColumn.cards.filter(card => !card.FE_PlaceholderCard)
+
         // Cập nhật lại mảng cardOrderIds cho chuẩn dữ liệu
         netxOverColumn.cardsOrderIds = netxOverColumn.cards.map(card => card._id)
 
       }
+
+      console.log('nextColumns', nextColumns)
 
       return nextColumns
     })
