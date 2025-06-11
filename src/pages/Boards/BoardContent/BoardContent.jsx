@@ -88,7 +88,7 @@ function BoardContent( { board } ) {
 
         // Thêm Placeholder Card nếu Column rỗng: Bị kéo hết Card đi, không còn cái nào nữa. (Video 37.2)
         if (isEmpty(netxActiveColumn.cards)) {
-          console.log('card cuoi cung bi keo di')
+          //console.log('card cuoi cung bi keo di')
           netxActiveColumn.cards = [generatePlaceholderCard(netxActiveColumn)]
         }
 
@@ -118,7 +118,7 @@ function BoardContent( { board } ) {
 
       }
 
-      console.log('nextColumns', nextColumns)
+      //console.log('nextColumns', nextColumns)
 
       return nextColumns
     })
