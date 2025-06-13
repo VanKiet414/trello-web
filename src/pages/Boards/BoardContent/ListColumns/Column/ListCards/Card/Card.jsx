@@ -10,6 +10,7 @@ import Button from '@mui/material/Button'
 
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import theme from '~/theme'
 
 function Card({ card }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
@@ -38,7 +39,9 @@ function Card({ card }) {
         cursor: 'pointer',
         boxShadow: '0 1px 1px rgba(0, 0, 0, 0.2)',
         overflow: 'unset',
-        opacity: card?.FE_PlaceholderCard ? 0 : 1 // cách này dùng mượt mà hơn
+        opacity: card?.FE_PlaceholderCard ? 0 : 1, // cách này dùng mượt mà hơn
+        border: '1px solid transparent',
+        '&:hover': { borderColor: (theme) => theme.palette.primary.main }
         // Cách này không kéo được card giữa 2 column dndKit không nhận diện được DOM
         //display: card?.FE_PlaceholderCard ? 'none' : 'block'
         // Đày là 2 cách để ẩn card tùy dự án
