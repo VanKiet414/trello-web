@@ -3,6 +3,8 @@ import Card from './Card/Card'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 
 function ListCards({ cards }) {
+  // Lọc bỏ card placeholder (nếu có)
+  const visibleCards = cards?.filter(card => !card.FE_PlaceholderCard)
   return (
     <SortableContext items={cards?.map(c => c._id)} strategy={verticalListSortingStrategy}>
       <Box sx={{
@@ -22,8 +24,8 @@ function ListCards({ cards }) {
         '&::-webkit-scrollbar-thumb': { backgroundColor: '#ced0da' },
         '&::-webkit-scrollbar-thumb:hover': { backgroundColor: '#bfc2cf' }
       }}>
-        {cards?.map(card => <Card key={card._id} card={card} />)}
-
+        {/* {cards?.map(card => <Card key={card._id} card={card} />)} */}
+        {visibleCards?.map(card => <Card key={card._id} card={card} />)}
       </Box>
     </SortableContext>
   )
