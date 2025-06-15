@@ -42,7 +42,7 @@ function Card({ card }) {
         border: '1px solid transparent',
         '&:hover': { borderColor: (theme) => theme.palette.primary.main }
         // Cách này không kéo được card giữa 2 column dndKit không nhận diện được DOM
-        //display: card?.FE_PlaceholderCard ? 'none' : 'block'
+        // display: card?.FE_PlaceholderCard ? 'none' : 'block'
         // Đày là 2 cách để ẩn card tùy dự án
         //overflow: card?.FE_PlaceholderCard ? 'hidden' : 'unset'
         //height: card?.FE_PlaceholderCard ? '0px' : 'unset'
