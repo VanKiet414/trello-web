@@ -33,7 +33,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD: 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-function BoardContent( { board, createNewColumn, createNewCard } ) {
+function BoardContent( { board, createNewColumn, createNewCard, moveColumns } ) {
   // https://docs.dndkit.com/api-documentation/sensor
   // Nếu dùng PointerSensor mặc định thì phải kết hợp thuộc tính CSS touch-action: none ở phần tử kéo thả - nhưng mà còn bug
   // const pointerSensor = useSensor(PointerSensor, { activationConstraint: { distance: 10 } })
@@ -268,12 +268,19 @@ function BoardContent( { board, createNewColumn, createNewCard } ) {
         // Dùng arrayMove của thằng dnd-kit để sắp xếp lại mảng Columns ban đầu
         // Code của arrayMove ở đây: dnd-kit/packages/sortable/src/utilities/arrayMove.ts
         const dndOrderedColumns = arrayMove(orderedColumns, oldColumnIndex, newColumnIndex)
-        // 2 cái console.log dữ liệu này sau dùng để xử lý gọi API
-        /* const dndOrderedColumnsIds = dndOrderedColumns.map(c => c._id)
-      console.log('dndOrderedColumns', dndOrderedColumns)
-      console.log('dndOrderedColumnsIds', dndOrderedColumnsIds) */
 
-        // Cập nhật lại state columns ban đầu sau khi đã kéo thả
+        /**
+         * Gọi hàm props moveColumns nằm ở component cha cao nhất (boards/_id.jsx).
+         * Lưu ý: Khi học MERN Stack nâng cao, chúng ta sẽ đưa dữ liệu Board ra ngoài Redux Global Store.
+         * Khi đó, việc xử lý logic và gọi API sẽ thực hiện ở các tầng cao hơn, giúp quản lý dữ liệu tập trung và hiệu quả hơn.
+         * Hiện tại, chúng ta gọi API trực tiếp ở đây để đơn giản hóa luồng dữ liệu.
+         * Tuy nhiên, nếu component con nằm càng sâu thì việc truyền callback lên cha sẽ càng phức tạp.
+         * (Đối với component con nằm càng sâu thì càng khó quản lý luồng dữ liệu)
+         * Khi sử dụng Redux, code sẽ clean, chuẩn chỉnh và dễ mở rộng hơn rất nhiều.
+         */
+        moveColumns(dndOrderedColumns)
+
+        // Vẫn gọi update state ở đây để tránh delay hoặc flickering giao diện (úc kéo thả cần phải chờ gọi API)
         setOrderedColumns(dndOrderedColumns)
 
       }
