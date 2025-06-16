@@ -97,7 +97,7 @@ function Column({ column, createNewCard, deleteColumnDetails }) {
       allowClose: false,
       dialogProps: { maxWidth: 'xs' },
       cancellationButtonProps: { color: 'inherit' },
-      confirmationButtonProps: { color: 'secondary', variant: 'outlined' }, 
+      confirmationButtonProps: { color: 'secondary', variant: 'outlined' },
       description: 'Phải nhập chữ vankietdev thì mới được Confirm =))',
       confirmationKeyword: 'vankietdev' */
 
