@@ -39,10 +39,10 @@ function Card({ card }) {
         boxShadow: '0 1px 1px rgba(0, 0, 0, 0.2)',
         overflow: 'unset',
         opacity: card?.FE_PlaceholderCard ? 0 : 1, // cách này dùng mượt mà hơn
+        // Cách này không kéo được card giữa 2 column dndKit không nhận diện được DOM
+        // display: card?.FE_PlaceholderCard ? 'none' : 'block',
         border: '1px solid transparent',
         '&:hover': { borderColor: (theme) => theme.palette.primary.main }
-        // Cách này không kéo được card giữa 2 column dndKit không nhận diện được DOM
-        // display: card?.FE_PlaceholderCard ? 'none' : 'block'
         // Đày là 2 cách để ẩn card tùy dự án
         //overflow: card?.FE_PlaceholderCard ? 'hidden' : 'unset'
         //height: card?.FE_PlaceholderCard ? '0px' : 'unset'
