@@ -11,7 +11,8 @@ import {
   createNewColumnAPI,
   createNewCardAPI,
   updateBoardDetailsAPI,
-  updateColumnDetailsAPI
+  updateColumnDetailsAPI,
+  moveCardToDifferentColumnAPI
 } from '~/apis'
 import { generatePlaceholderCard } from '~/utils/formatters'
 import { isEmpty } from 'lodash'
@@ -92,7 +93,7 @@ function Board () {
     setBoard(newBoard)
   }
 
-  /* Func này có nhiệm vụ gọi API và xử lý khi kéo thả Column xong xuôi
+  /* Khi di chuyển card trong cùng Column
      Chỉ cần gọi API để cập nhật mảng trong columnOrderIds của Board chứa nó (thay đổi vị trí trong mảng) */
   const moveColumns = (dndOrderedColumns) => {
     // Update cho chuẩn dữ liệu state Board
@@ -107,7 +108,7 @@ function Board () {
   }
 
   /* Func này có nhiệm vụ gọi API và xử lý khi kéo thả Column xong xuôi
-  Chỉ cần gọi API để cập nhật mảng trong columnOrderIds của Board chứa nó (thay đổi vị trí trong mảng) */
+  Chỉ cần gọi API để cập nhật mảng trong cardOrderIds của Column chứa nó (thay đổi vị trí trong mảng) */
   const moveCardInTheSameColumn = (dndOrderedCards, dndOrderedCardIds, columnId) => {
     // Update cho chuẩn dữ liệu state Board
     const newBoard = { ...board }
@@ -120,15 +121,46 @@ function Board () {
 
     // Gọi API update Column
     updateColumnDetailsAPI(columnId, { cardOrderIds: dndOrderedCardIds })
-
   }
+
+  /**
+ * Khi di chuyển card sang Column khác:
+ * B1: Cập nhật mảng cardOrderIds của Column ban đầu chứa nó
+ *     (Thực chất là xóa _id của Card ra khỏi mảng cardOrderIds của Column này).
+ * B2: Cập nhật mảng cardOrderIds của Column đích
+ *     (Thực chất là thêm _id của Card vào mảng cardOrderIds của Column đích, đúng vị trí mong muốn).
+ * B3: Cập nhật lại trường columnId mới của Card vừa được kéo
+ *     (Đảm bảo Card biết nó đang thuộc Column nào).
+ * => Nên làm một API riêng để hỗ trợ thao tác này, đảm bảo tính nhất quán dữ liệu.
+ */
+  const moveCardToDifferentColumn = (currentCardId, prevColumnId, nextColumnId, dndOrderedColumns) => {
+
+    // Update cho chuẩn dữ liệu state Board
+    const dndOrderedColumnsIds = dndOrderedColumns.map(c => c._id)
+    const newBoard = { ...board }
+    newBoard.columns = dndOrderedColumns
+    newBoard.columnOrderIds = dndOrderedColumnsIds
+    setBoard(newBoard)
+
+    // Gọi API xử lý phía BE
+    moveCardToDifferentColumnAPI({
+      currentCardId,
+      prevColumnId,
+      prevCardOrderIds: dndOrderedColumns.find(c => c._id === prevColumnId)?.cardOrderIds,
+      nextColumnId,
+      nextCardOrderIds: dndOrderedColumns.find(c => c._id === nextColumnId)?.cardOrderIds
+    })
+  }
+
 
   if (!board) {
     return (
-      <Box sx={{ display: 'flex',
+      <Box sx={{
+        display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: 2, width: '100vw',
+        gap: 2,
+        width: '100vw',
         height: '100vh'
       }}>
         <CircularProgress />
@@ -147,6 +179,7 @@ function Board () {
         createNewCard={createNewCard}
         moveColumns={moveColumns}
         moveCardInTheSameColumn={moveCardInTheSameColumn}
+        moveCardToDifferentColumn={moveCardToDifferentColumn}
       />
     </Container>
   )
