@@ -73,7 +73,7 @@ function Board () {
     setBoard(newBoard)
   }
 
-  // Func này có nhiệm vụ gọi API tạo mới Card và làm lại dữ liệu State Board
+  /* // Func này có nhiệm vụ gọi API tạo mới Card và làm lại dữ liệu State Board
   const createNewCard = async (newCardData) => {
     const createdCard = await createNewCardAPI({
       ...newCardData,
@@ -100,6 +100,38 @@ function Board () {
       }
     }
     setBoard(newBoard)
+  } */
+  const createNewCard = async (newCardData) => {
+    const createdCard = await createNewCardAPI({
+      ...newCardData,
+      boardId: board._id
+    })
+
+    // Tạo bản sao mới cho columns
+    const newColumns = board.columns.map(column => {
+      if (column._id === createdCard.columnId) {
+      // Nếu Column rỗng (chỉ có placeholder)
+        if (column.cards.some(card => card.FE_PlaceholderCard)) {
+          return {
+            ...column,
+            cards: [createdCard],
+            cardOrderIds: [createdCard._id]
+          }
+        } else {
+          return {
+            ...column,
+            cards: [...column.cards, createdCard],
+            cardOrderIds: [...column.cardOrderIds, createdCard._id]
+          }
+        }
+      }
+      return column
+    })
+
+    setBoard({
+      ...board,
+      columns: newColumns
+    })
   }
 
   /* Func này có nhiệm vụ gọi API và xử lý khi kéo thả column xong xuôi
