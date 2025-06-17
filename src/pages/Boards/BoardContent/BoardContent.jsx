@@ -38,8 +38,7 @@ function BoardContent({
   createNewCard,
   moveColumns,
   moveCardInTheSameColumn,
-  moveCardToDifferentColumn,
-  deleteColumnDetails
+  moveCardToDifferentColumn
 }) {
   // https://docs.dndkit.com/api-documentation/sensor
   // Nếu dùng PointerSensor mặc định thì phải kết hợp thuộc tính CSS touch-action: none ở phần tử kéo thả - nhưng mà còn bug
@@ -113,6 +112,7 @@ function BoardContent({
 
         // Thêm Placeholder Card nếu Column rỗng: Bị kéo hết Card đi, không còn cái nào nữa. (Video 37.2)
         if (isEmpty(netxActiveColumn.cards)) {
+          //console.log('card cuoi cung bi keo di')
           netxActiveColumn.cards = [generatePlaceholderCard(netxActiveColumn)]
         }
 
@@ -134,9 +134,10 @@ function BoardContent({
         // Tiếp theo là thêm cái card đang kéo vào overColumn theo vị trí index mới
         netxOverColumn.cards = netxOverColumn.cards.toSpliced(newCardIndex, 0, rebuild_activeDraggingCardData)
 
-        // Xóa cái Placeholder Card đi nếu nó đang tồn tại video (37.2)
+        // Xóa Placeholder Card khỏi cards
         netxOverColumn.cards = netxOverColumn.cards.filter(card => !card.FE_PlaceholderCard)
-
+        // Xóa luôn placeholder khỏi cardOrderIds nếu còn sót
+        netxOverColumn.cardsOrderIds = netxOverColumn.cardsOrderIds?.filter(id => !id.includes('placeholder-card'))
         // Cập nhật lại mảng cardOrderIds cho chuẩn dữ liệu
         netxOverColumn.cardsOrderIds = netxOverColumn.cards.map(card => card._id)
 
@@ -415,7 +416,6 @@ function BoardContent({
           columns={orderedColumns}
           createNewColumn={createNewColumn}
           createNewCard={createNewCard}
-          deleteColumnDetails={deleteColumnDetails}
         />
         <DragOverlay dropAnimation={customDropAnimation}>
           {(!activeDragItemType) && null}

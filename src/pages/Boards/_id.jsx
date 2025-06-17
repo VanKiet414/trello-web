@@ -91,7 +91,7 @@ function Board () {
     if (columnToUpdate) {
       // Nếu Column rỗng: bản chất là đang chứa một cái placeholder card
       if (columnToUpdate.cards.some(card => card.FE_PlaceholderCard)) {
-        columnToUpdate.cars = [createdCard]
+        columnToUpdate.cards = [createdCard]
         columnToUpdate.cardOrderIds = [createdCard._id]
       } else {
         // Ngược lại column đã có data thì push vào cuối mảng
