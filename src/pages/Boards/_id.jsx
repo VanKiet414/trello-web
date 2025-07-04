@@ -142,7 +142,7 @@ function Board () {
  *     (Đảm bảo Card biết nó đang thuộc Column nào).
  * => Nên làm một API riêng để hỗ trợ thao tác này, đảm bảo tính nhất quán dữ liệu.
  */
-  /* const moveCardToDifferentColumn = (currentCardId, prevColumnId, nextColumnId, dndOrderedColumns) => {
+  const moveCardToDifferentColumn = (currentCardId, prevColumnId, nextColumnId, dndOrderedColumns) => {
   // Update cho chuẩn dữ liệu state Board
     const dndOrderedColumnsIds = dndOrderedColumns.map(c => c._id)
     const newBoard = { ...board }
@@ -163,9 +163,9 @@ function Board () {
       nextColumnId,
       nextCardOrderIds: dndOrderedColumns.find(c => c._id === prevColumnId)?.cardOrderIds
     })
-  } */
+  }
 
-  // Bug tự Fix
+  /*  // Bug tự Fix
   const moveCardToDifferentColumn = (currentCardId, prevColumnId, nextColumnId, dndOrderedColumns) => {
     // Update cho chuẩn dữ liệu state Board
     const dndOrderedColumnsIds = dndOrderedColumns.map(c => c._id)
@@ -190,7 +190,7 @@ function Board () {
       nextColumnId,
       nextCardOrderIds
     })
-  }
+  } */
 
   // Xử lý xóa một Column và Cards bên trong nó
   const deleteColumnDetails = (columnId) => {
