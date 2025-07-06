@@ -110,7 +110,13 @@ function Board () {
       prevColumnId,
       prevCardOrderIds,
       nextColumnId,
+<<<<<<< HEAD
       nextCardOrderIds: dndOrderedColumns.find(c => c._id === nextColumnId)?.cardOrderIds
+=======
+
+      nextCardOrderIds: dndOrderedColumns.find(c => c._id === nextColumnId)?.cardOrderIds
+
+>>>>>>> e11a8266f31641a95eba0d1a598c54d1ed576e9f
     })
   }
 
