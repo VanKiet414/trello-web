@@ -23,9 +23,18 @@ import { CSS } from '@dnd-kit/utilities'
 import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
 import { useConfirm } from 'material-ui-confirm'
+import { createNewCardAPI, deleteColumnDetailsAPI } from '~/apis'
+import {
+  updateCurrentActiveBoard,
+  selectCurrentActiveBoard
+} from '~/redux/activeBoard/activeBoardSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { cloneDeep } from 'lodash'
 
 
-function Column({ column, createNewCard, deleteColumnDetails }) {
+function Column({ column }) {
+  const dispatch = useDispatch()
+  const board = useSelector(selectCurrentActiveBoard)
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: column._id,
@@ -58,7 +67,7 @@ function Column({ column, createNewCard, deleteColumnDetails }) {
 
   const [newCardTitle, setNewCardTitle] = useState('')
 
-  const addNewCard = () => {
+  const addNewCard = async () => {
     if (!newCardTitle) {
       toast.error('Please enter Card Title!', { position: 'bottom-right' })
       return
@@ -70,13 +79,36 @@ function Column({ column, createNewCard, deleteColumnDetails }) {
       columnId: column._id
     }
 
-    /* Gọi lên props function createNewCard nằm ở component cha cao nhất (boards/_id.jsx)
-      Lưu ý: Về sau, khi học phần MERN Stack nâng cao, chúng ta sẽ đưa dữ liệu Board ra ngoài Redux Global Store.
-      Khi đó, việc gọi API hoặc xử lý dữ liệu sẽ thực hiện ở các tầng cao hơn, giúp code sạch và dễ quản lý hơn.
-      Thì lúc này chúng ta gọi API trực tiếp ở đây để đơn giản hóa luồng dữ liệu.
-      Tuy nhiên, nếu component con nằm càng sâu thì việc truyền props callback lên cha sẽ càng phức tạp.
-      Khi sử dụng Redux, code sẽ clean, chuẩn chỉnh và dễ mở rộng hơn rất nhiều. */
-    createNewCard(newCardData)
+    // Gọi API tạo mới Card và làm lại dữ liệu State Board
+    const createdCard = await createNewCardAPI({
+      ...newCardData,
+      boardId: board._id
+    })
+
+    // Cập nhật lại state Board
+    // Phía Front-end, chúng ta phải tự cập nhật lại state data board (thay vì phải gọi lại API fetchBoardDetails).
+    // Lưu ý: Cách làm này phụ thuộc vào lựa chọn và đặc thù từng dự án.
+    // Ở một số dự án, Back-end sẽ hỗ trợ trả về toàn bộ dữ liệu Board mới sau khi có thao tác tạo Column hoặc Card,
+    // giúp Front-end nhận được dữ liệu cập nhật ngay mà không cần gọi lại API lấy chi tiết Board.
+    // => Khi đó, Front-end sẽ nhận dữ liệu mới nhanh và đơn giản hơn.
+
+    // Tương tự hàm createNewColumn nên chỗ này dùng cloneDeep
+    // const newBoard = { ...board }
+    const newBoard = cloneDeep(board)
+    const columnToUpdate = newBoard.columns.find(column => column._id === createdCard.columnId)
+    if (columnToUpdate) {
+      // Nếu Column rỗng: bản chất là đang chứa một cái placeholder card
+      if (columnToUpdate.cards.some(card => card.FE_PlaceholderCard)) {
+        columnToUpdate.cards = [createdCard]
+        columnToUpdate.cardOrderIds = [createdCard._id]
+      } else {
+        // Ngược lại column đã có data thì push vào cuối mảng
+        columnToUpdate.cards.push(createdCard)
+        columnToUpdate.cardOrderIds.push(createdCard._id)
+      }
+    }
+    // setBoard(newBoard)
+    dispatch(updateCurrentActiveBoard(newBoard))
 
     // Đóng trạng thái thêm Card mới & Clear Input
     toggleOpenNewCardForm()
@@ -102,13 +134,19 @@ function Column({ column, createNewCard, deleteColumnDetails }) {
       confirmationKeyword: 'vankietdev' */
 
     }).then(() => {
-      /* Gọi lên props function createNewCard nằm ở component cha cao nhất (boards/_id.jsx)
-      Lưu ý: Về sau, khi học phần MERN Stack nâng cao, chúng ta sẽ đưa dữ liệu Board ra ngoài Redux Global Store.
-      Khi đó, việc gọi API hoặc xử lý dữ liệu sẽ thực hiện ở các tầng cao hơn, giúp code sạch và dễ quản lý hơn.
-      Thì lúc này chúng ta gọi API trực tiếp ở đây để đơn giản hóa luồng dữ liệu.
-      Tuy nhiên, nếu component con nằm càng sâu thì việc truyền props callback lên cha sẽ càng phức tạp.
-      Khi sử dụng Redux, code sẽ clean, chuẩn chỉnh và dễ mở rộng hơn rất nhiều. */
-      deleteColumnDetails(column._id)
+      // Update cho chuẩn dữ liệu state Board
+
+      // Tương tự đoạn xử lý chỗ hàm moveColumns nên không ảnh hưởng Redux Toolkit Immutability gì ở đây cả.
+      const newBoard = { ...board }
+      newBoard.columns = newBoard.columns.filter(c => c._id !== column._id)
+      newBoard.columnOrderIds = newBoard.columnOrderIds.filter(_id => _id !== column._id)
+      // setBoard(newBoard)
+      dispatch(updateCurrentActiveBoard(newBoard))
+
+      // Gọi API xóa từ phía BE
+      deleteColumnDetailsAPI(column._id).then(res => {
+        toast.success(res?.deleteResult)
+      })
     }).catch(() => {})
   }
 
