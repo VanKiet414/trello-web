@@ -20,6 +20,7 @@ import {
   selectCurrentActiveBoard
 } from '~/redux/activeBoard/activeBoardSlice'
 import { useDispatch, useSelector } from 'react-redux'
+import { useParams } from 'react-router-dom'
 
 function Board () {
   const dispatch = useDispatch()
@@ -27,12 +28,12 @@ function Board () {
   // const [board, setBoard] = useState(null)
   const board = useSelector(selectCurrentActiveBoard)
 
+  const { boardId } = useParams()
+
   useEffect(() => {
-    // Tạm thời fix cứng boardId, sau khi học nâng cao sẽ sử dụng react-router-dom để lấy chuẩn boardId từ URL về.
-    const boardId = '684a98323ba77f91adf598df'
     // Call API
     dispatch(fetchBoardDetailsAPI(boardId))
-  }, [dispatch])
+  }, [dispatch, boardId])
 
   /* Func này có nhiệm vụ gọi API và xử lý khi kéo thả column xong xuôi
      Chỉ cần gọi API để cập nhật mảng trong columnOrderIds của Board chứa nó (thay đổi vị trí trong Board) */
@@ -100,23 +101,21 @@ function Board () {
     dispatch(updateCurrentActiveBoard(newBoard))
 
     // Gọi API xử lý phía Back-end
-    let prevCardOrderIds = dndOrderedColumns.find(c => c._id === prevColumnId)?.cardOrderIds
+    // Lấy cardOrderIds của column cũ và mới, đảm bảo là mảng
+    let prevCardOrderIds = dndOrderedColumns.find(c => c._id === prevColumnId)?.cardOrderIds || []
+    let nextCardOrderIds = dndOrderedColumns.find(c => c._id === nextColumnId)?.cardOrderIds || []
 
-    // Xử lý vấn đề khi kéo Card cuối cùng ra khỏi column, column rỗng sẽ có placeholder card, cần xóa nố đi trước khi gửi dữ liệu lên phía BE
-    if (prevCardOrderIds[0].includes('placeholder-card')) prevCardOrderIds = []
+    // Xử lý placeholder nếu có
+    if (prevCardOrderIds.length > 0 && prevCardOrderIds[0]?.includes('placeholder-card')) prevCardOrderIds = []
+    if (nextCardOrderIds.length > 0 && nextCardOrderIds[0]?.includes('placeholder-card')) nextCardOrderIds = []
 
+    // Gửi dữ liệu lên API
     moveCardToDifferentColumnAPI({
       currentCardId,
       prevColumnId,
       prevCardOrderIds,
       nextColumnId,
-<<<<<<< HEAD
-      nextCardOrderIds: dndOrderedColumns.find(c => c._id === nextColumnId)?.cardOrderIds
-=======
-
-      nextCardOrderIds: dndOrderedColumns.find(c => c._id === nextColumnId)?.cardOrderIds
-
->>>>>>> e11a8266f31641a95eba0d1a598c54d1ed576e9f
+      nextCardOrderIds
     })
   }
 
