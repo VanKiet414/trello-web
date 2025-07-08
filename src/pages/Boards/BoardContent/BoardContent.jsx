@@ -115,7 +115,7 @@ function BoardContent({
         }
 
         // Cập nhật lại mảng cardOrderIds cho chuẩn dữ liệu
-        netxActiveColumn.cardsOrderIds = netxActiveColumn.cards.map(card => card._id)
+        netxActiveColumn.cardOrderIds = netxActiveColumn.cards.map(card => card._id)
       }
 
       // netxOverColumn: Column mới
@@ -135,9 +135,9 @@ function BoardContent({
         // Xóa Placeholder Card khỏi cards
         netxOverColumn.cards = netxOverColumn.cards.filter(card => !card.FE_PlaceholderCard)
         // Xóa luôn placeholder khỏi cardOrderIds nếu còn sót
-        netxOverColumn.cardsOrderIds = netxOverColumn.cardsOrderIds?.filter(id => !id.includes('placeholder-card'))
+        netxOverColumn.cardOrderIds = netxOverColumn.cardOrderIds?.filter(id => !id.includes('placeholder-card'))
         // Cập nhật lại mảng cardOrderIds cho chuẩn dữ liệu
-        netxOverColumn.cardsOrderIds = netxOverColumn.cards.map(card => card._id)
+        netxOverColumn.cardOrderIds = netxOverColumn.cards.map(card => card._id)
 
       }
 
