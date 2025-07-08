@@ -24,7 +24,7 @@ function RegisterForm() {
   const { register, handleSubmit, formState: { errors }, watch } = useForm()
 
   const submitRegister = (data) => {
-    console.log('submit Register:', data)
+    /* console.log('submit Register:', data) */
   }
 
   return (
@@ -101,6 +101,7 @@ function RegisterForm() {
           </Box>
           <CardActions sx={{ padding: '0 1em 1em 1em' }}>
             <Button
+              className='interceptor-loading'
               type="submit"
               variant="contained"
               color="primary"
