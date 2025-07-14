@@ -1,4 +1,3 @@
-// TrungQuanDev: https://youtube.com/@trungquandev
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
@@ -6,6 +5,7 @@ import HomeIcon from '@mui/icons-material/Home'
 import SvgIcon from '@mui/material/SvgIcon'
 import { ReactComponent as PlanetSvg } from '~/assets/404/planet.svg'
 import { ReactComponent as AstronautSvg } from '~/assets/404/astronaut.svg'
+import particlesImg from '~/assets/404/particles.png'
 import { Link } from 'react-router-dom'
 
 function NotFound() {
@@ -24,7 +24,7 @@ function NotFound() {
         animation: 'stars 12s linear infinite alternate',
         width: '100%',
         height: '100%',
-        backgroundImage: 'url("src/assets/404/particles.png")',
+        backgroundImage: `url(${particlesImg})`,
         backgroundSize: 'contain',
         backgroundRepeat: 'repeat',
         backgroundPosition: 'center',
@@ -50,7 +50,7 @@ function NotFound() {
           }}>
             &nbsp;SPACE&nbsp;
           </Typography>
-          &nbsp;<Typography variant="span" sx={{ color: '#fdba26', fontWeight: 500 }}>TrungQuanDev</Typography>?<br />Hmm, looks like that page doesn&apos;t exist.
+          &nbsp;<Typography variant="span" sx={{ color: '#fdba26', fontWeight: 500 }}>VanKietDev</Typography>?<br />Hmm, looks like that page doesn&apos;t exist.
         </Typography>
         <Box sx={{ width: '390px', height: '390px', position: 'relative' }}>
           <SvgIcon component={AstronautSvg} inheritViewBox sx={{
