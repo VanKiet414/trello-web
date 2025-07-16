@@ -29,7 +29,7 @@ export const userSlice = createSlice({
     builder.addCase(loginUserAPI.fulfilled, (state, action) => {
       // action.payload ở đây chính là cái resonse.data trả về ở trên
       const user = action.payload
-      state.currentActiveBoard = user
+      state.currentUser = user
     })
   }
 })
