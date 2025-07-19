@@ -6,6 +6,7 @@ import Auth from '~/pages/Auth/Auth'
 import AccountVerification from '~/pages/Auth/AccountVerification'
 import { useSelector } from 'react-redux'
 import { selectCurrentUser } from '~/redux/user/userSlice'
+import Settings from '~/pages/Settings/Settings'
 
 /**
  * Giải pháp Clean Code trong việc xác định các route nào cần đăng nhập tài khoản xong thì mới cho truy cập
@@ -34,8 +35,14 @@ function App() {
       {/* Protected Routes (Hiểu đơn giản trong dự án của chúng ta là những route chỉ cho truy cập sau khi đã login) */}
       <Route element={<ProtectedRoute user={currentUser} />}>
         {/* <Outlet /> của react-router-dom sẽ chạy vào các child route trong này */}
+
         {/* Board Detail */}
         <Route path='/boards/:boardId' element={<Board />} />
+
+        {/* User Settings */}
+        <Route path='/settings/account' element={<Settings />} />
+        <Route path='/settings/security' element={<Settings />} />
+
       </Route>
 
       {/* Authentication */}

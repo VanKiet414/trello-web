@@ -22,6 +22,7 @@ import SearchIcon from '@mui/icons-material/Search'
 import CloseIcon from '@mui/icons-material/Close'
 //import trelloLogo from '~/assets/trello-logo-blue.png'
 import vinLogo from '~/assets/vin-logo.png'
+import { Link } from 'react-router-dom'
 
 function AppBar() {
   const [searchValue, setSearchValue] = useState ('')
@@ -40,13 +41,16 @@ function AppBar() {
     }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         <AppsIcon sx={{ color: 'white' }}/>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-          {/* <SvgIcon component={TrelloIcon} fontSize='small' inheritViewBox sx={{ color: 'white' }} /> */}
-          <img src={vinLogo} alt="Logo" style={{ height: 80, width: 80, objectFit: 'contain' }} />
-          <Typography variant="span" sx={{ fontSize: '1rem', fontWeight: 'bold', color: 'white' }}>
-          Vingroup
-          </Typography>
-        </Box>
+
+        <Link to='/'>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            {/* <SvgIcon component={TrelloIcon} fontSize='small' inheritViewBox sx={{ color: 'white' }} /> */}
+            <img src={vinLogo} alt="Logo" style={{ height: 80, width: 80, objectFit: 'contain' }} />
+            <Typography variant="span" sx={{ fontSize: '1rem', fontWeight: 'bold', color: 'white' }}>
+            Vingroup
+            </Typography>
+          </Box>
+        </Link>
 
         <Box sx= {{ display: { xs: 'none', md: 'flex' }, gap: 1 }}>
           <Workspaces />
