@@ -16,7 +16,8 @@ import {
   deleteColumnDetailsAPI
 } from '~/apis'
 import { generatePlaceholderCard } from '~/utils/formatters'
-import { isEmpty } from 'lodash'
+// SỬA ĐỔI: Import cloneDeep từ lodash
+import { isEmpty, cloneDeep } from 'lodash'
 import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
 import { Typography } from '@mui/material'
@@ -67,7 +68,8 @@ function Board () {
     // Ở một số dự án, Back-end sẽ hỗ trợ trả về toàn bộ dữ liệu Board mới sau khi có thao tác tạo Column hoặc Card,
     // giúp Front-end nhận được dữ liệu cập nhật ngay mà không cần gọi lại API lấy chi tiết Board.
     // => Khi đó, Front-end sẽ nhận dữ liệu mới nhanh và đơn giản hơn.
-    const newBoard = { ...board }
+    // SỬA ĐỔI: Sử dụng cloneDeep để tạo bản sao sâu, tránh lỗi mutate state
+    const newBoard = cloneDeep(board)
     newBoard.columns.push(createdColumn)
     newBoard.columnOrderIds.push(createdColumn._id)
     setBoard(newBoard)
@@ -86,7 +88,8 @@ function Board () {
     // Ở một số dự án, Back-end sẽ hỗ trợ trả về toàn bộ dữ liệu Board mới sau khi có thao tác tạo Column hoặc Card,
     // giúp Front-end nhận được dữ liệu cập nhật ngay mà không cần gọi lại API lấy chi tiết Board.
     // => Khi đó, Front-end sẽ nhận dữ liệu mới nhanh và đơn giản hơn.
-    const newBoard = { ...board }
+    // SỬA ĐỔI: Sử dụng cloneDeep
+    const newBoard = cloneDeep(board)
     const columnToUpdate = newBoard.columns.find(column => column._id === createdCard.columnId)
     if (columnToUpdate) {
       // Nếu Column rỗng: bản chất là đang chứa một cái placeholder card
@@ -107,7 +110,8 @@ function Board () {
   const moveColumns = (dndOrderedColumns) => {
     // Update cho chuẩn dữ liệu state Board
     const dndOrderedColumnsIds = dndOrderedColumns.map(c => c._id)
-    const newBoard = { ...board }
+    // SỬA ĐỔI: Sử dụng cloneDeep
+    const newBoard = cloneDeep(board)
     newBoard.columns = dndOrderedColumns
     newBoard.columnOrderIds = dndOrderedColumnsIds
     setBoard(newBoard)
@@ -120,7 +124,8 @@ function Board () {
   Chỉ cần gọi API để cập nhật mảng trong cardOrderIds của Column chứa nó (thay đổi vị trí trong mảng) */
   const moveCardInTheSameColumn = (dndOrderedCards, dndOrderedCardIds, columnId) => {
     // Update cho chuẩn dữ liệu state Board
-    const newBoard = { ...board }
+    // SỬA ĐỔI: Sử dụng cloneDeep
+    const newBoard = cloneDeep(board)
     const columnToUpdate = newBoard.columns.find(column => column._id === columnId)
     if (columnToUpdate) {
       columnToUpdate.cards = dndOrderedCards
@@ -142,10 +147,11 @@ function Board () {
  *     (Đảm bảo Card biết nó đang thuộc Column nào).
  * => Nên làm một API riêng để hỗ trợ thao tác này, đảm bảo tính nhất quán dữ liệu.
  */
-  /* const moveCardToDifferentColumn = (currentCardId, prevColumnId, nextColumnId, dndOrderedColumns) => {
+  const moveCardToDifferentColumn = (currentCardId, prevColumnId, nextColumnId, dndOrderedColumns) => {
   // Update cho chuẩn dữ liệu state Board
     const dndOrderedColumnsIds = dndOrderedColumns.map(c => c._id)
-    const newBoard = { ...board }
+    // SỬA ĐỔI: Sử dụng cloneDeep
+    const newBoard = cloneDeep(board)
     newBoard.columns = dndOrderedColumns
     newBoard.columnOrderIds = dndOrderedColumnsIds
     setBoard(newBoard)
@@ -153,7 +159,7 @@ function Board () {
     // Lấy cardOrderIds của column cũ và mới
     let prevCardOrderIds = dndOrderedColumns.find(c => c._id === prevColumnId)?.cardOrderIds
 
-    // Xử lý vấn đề khi kéo Card cuối cùng ra khỏi column, column rỗng sẽ có placeholder card, cần xóa nố đi trước khi gửi dữ liệu lên phía BE
+    // Xử lý vấn đề khi kéo Card cuối cùng ra khỏi column, column rỗng sẽ có placeholder card, cần xóa nó đi trước khi gửi dữ liệu lên phía BE
     if (prevCardOrderIds[0].includes('placeholder-card')) prevCardOrderIds = []
 
     moveCardToDifferentColumnAPI({
@@ -161,41 +167,16 @@ function Board () {
       prevColumnId,
       prevCardOrderIds,
       nextColumnId,
-      nextCardOrderIds: dndOrderedColumns.find(c => c._id === prevColumnId)?.cardOrderIds
-    })
-  } */
-
-  // Bug tự Fix
-  const moveCardToDifferentColumn = (currentCardId, prevColumnId, nextColumnId, dndOrderedColumns) => {
-    // Update cho chuẩn dữ liệu state Board
-    const dndOrderedColumnsIds = dndOrderedColumns.map(c => c._id)
-    const newBoard = { ...board }
-    newBoard.columns = dndOrderedColumns
-    newBoard.columnOrderIds = dndOrderedColumnsIds
-    setBoard(newBoard)
-
-    // Gọi API xử lý phía BE
-    // Lấy cardOrderIds của column cũ và mới, loại bỏ placeholder
-    // filter toàn bộ mảng, loại bỏ mọi id chứa 'placeholder-card', đảm bảo không còn placeholder nào trong mảng gửi lên API.
-    let prevCardOrderIds = dndOrderedColumns.find(c => c._id === prevColumnId)?.cardOrderIds?.filter(id => !id.includes('placeholder-card')) || []
-    let nextCardOrderIds = dndOrderedColumns.find(c => c._id === nextColumnId)?.cardOrderIds?.filter(id => !id.includes('placeholder-card')) || []
-
-    // Xử lý vấn đề khi kéo Card cuối cùng ra khỏi column, column rỗng sẽ có placeholder card, cần xóa nố đi trước khi gửi dữ liệu lên phía BE
-    if (prevCardOrderIds[0].includes('placeholder-card')) prevCardOrderIds = []
-
-    moveCardToDifferentColumnAPI({
-      currentCardId,
-      prevColumnId,
-      prevCardOrderIds,
-      nextColumnId,
-      nextCardOrderIds
+      // SỬA LỖI LOGIC: Lấy cardOrderIds từ cột đích (nextColumnId) thay vì cột cũ (prevColumnId)
+      nextCardOrderIds: dndOrderedColumns.find(c => c._id === nextColumnId)?.cardOrderIds
     })
   }
 
   // Xử lý xóa một Column và Cards bên trong nó
   const deleteColumnDetails = (columnId) => {
     // Update cho chuẩn dữ liệu state Board
-    const newBoard = { ...board }
+    // SỬA ĐỔI: Sử dụng cloneDeep để đảm bảo an toàn khi cập nhật
+    const newBoard = cloneDeep(board)
     newBoard.columns = newBoard.columns.filter(c => c._id !== columnId)
     newBoard.columnOrderIds = newBoard.columnOrderIds.filter(_id => _id !== columnId)
     setBoard(newBoard)

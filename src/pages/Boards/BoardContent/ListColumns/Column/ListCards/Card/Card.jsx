@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react' // Thêm React và useMemo
 import { Card as MuiCard } from '@mui/material'
 import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
@@ -11,13 +12,15 @@ import Button from '@mui/material/Button'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
-function Card({ card }) {
+// TỐI ƯU 1: Bọc component bằng React.memo để tránh render không cần thiết
+const Card = React.memo(({ card }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: card._id,
     data: { ...card }
   })
 
-  const dndKitCardStyles = {
+  // TỐI ƯU 2: Sử dụng useMemo để ghi nhớ object style, chỉ tạo lại khi cần
+  const dndKitCardStyles = useMemo(() => ({
     /* touchAction: 'none', // Dành cho sensor default dạng PointerSensor */
     // Nếu sử dụng CSS.Transform như docs sẽ lỗi kiểu stretch
     // https://github.com/clauderic/dnd-kit/issues/117
@@ -25,7 +28,7 @@ function Card({ card }) {
     transition,
     opacity: isDragging ? 0.5 : undefined,
     border: isDragging ? '1px solid #2ecc71' : undefined
-  }
+  }), [transform, transition, isDragging])
 
   const shouldShowCardActions = () => {
     return !!card?.memberIds?.length || !!card?.comments?.length || !!card?.attachments?.length
@@ -38,9 +41,7 @@ function Card({ card }) {
         cursor: 'pointer',
         boxShadow: '0 1px 1px rgba(0, 0, 0, 0.2)',
         overflow: 'unset',
-        opacity: card?.FE_PlaceholderCard ? 0 : 1, // cách này dùng mượt mà hơn
-        // Cách này không kéo được card giữa 2 column dndKit không nhận diện được DOM
-        // display: card?.FE_PlaceholderCard ? 'none' : 'block',
+        display: card?.FE_PlaceholderCard ? 'none' : 'block',
         border: '1px solid transparent',
         '&:hover': { borderColor: (theme) => theme.palette.primary.main }
         // Đày là 2 cách để ẩn card tùy dự án
@@ -67,6 +68,6 @@ function Card({ card }) {
       }
     </MuiCard>
   )
-}
+})
 
 export default Card
