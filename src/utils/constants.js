@@ -7,7 +7,7 @@ if (process.env.BUILD_MODE === 'dev') {
   apiRoot = 'http://localhost:8017'
 }
 if (process.env.BUILD_MODE === 'production') {
-  apiRoot= 'https://trello-api-epsq.onrender.com'
+  apiRoot= 'https://api.vankietdev.io.vn'
 }
 
 /* console.log('🚀 ~ apiRoot:', apiRoot) */
