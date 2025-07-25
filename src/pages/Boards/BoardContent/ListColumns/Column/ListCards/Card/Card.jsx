@@ -12,7 +12,7 @@ import Button from '@mui/material/Button'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useDispatch } from 'react-redux'
-import { updateCurrentActiveCard } from '~/redux/activeCard/activeCardSlice'
+import { updateCurrentActiveCard, showModalActiveCard } from '~/redux/activeCard/activeCardSlice'
 
 // TỐI ƯU 1: Bọc component bằng React.memo để tránh render không cần thiết
 const Card = React.memo(({ card }) => {
@@ -38,8 +38,10 @@ const Card = React.memo(({ card }) => {
   }
 
   const setActiveCard = () => {
-  // Cập nhật data cho cái activeCard trong Redux
+    // Cập nhật data cho cái activeCard trong Redux
     dispatch(updateCurrentActiveCard(card))
+    // Hiện Modal ActiveCard lên
+    dispatch(showModalActiveCard())
   }
 
   return (
