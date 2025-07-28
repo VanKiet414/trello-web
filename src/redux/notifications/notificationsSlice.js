@@ -4,7 +4,8 @@ import { API_ROOT } from '~/utils/constants'
 
 // Khởi tạo giá trị của một Slice trong redux
 const initialState = {
-  currentNotifications: null
+  currentNotifications: null,
+  hasNewNotification: false // Thêm biến này để quản lý trạng thái chấm đỏ
 }
 
 // Các hành động gọi api (bất đồng bộ) và cập nhật dữ liệu vào Redux, dùng Middleware createAsyncThunk
@@ -44,6 +45,11 @@ export const notificationsSlice = createSlice({
       const incomingInvitation = action.payload
       // unshift là thêm phần tử vào đầu mảng, ngược lại với push
       state.currentNotifications.unshift(incomingInvitation)
+      state.hasNewNotification = true // Khi có notification mới, bật chấm đỏ
+    },
+    // Thêm reducer để set trạng thái chấm đỏ
+    setHasNewNotification: (state, action) => {
+      state.hasNewNotification = action.payload
     }
   },
   // ExtraReducers: Xử lý dữ liệu bất đồng bộ
@@ -68,13 +74,17 @@ export const notificationsSlice = createSlice({
 export const {
   clearCurrentNotifications,
   updateCurrentNotifications,
-  addNotification
+  addNotification,
+  setHasNewNotification // Export thêm action này
 } = notificationsSlice.actions
 
 // Selectors: Là nơi dành cho các components bên dưới gọi bằng hook useSelector() để lấy dữ liệu từ trong kho redux store ra sử dụng
 export const selectCurrentNotifications = state => {
   return state.notifications.currentNotifications
 }
+
+// Selector lấy trạng thái chấm đỏ
+export const selectHasNewNotification = state => state.notifications.hasNewNotification
 
 // Cái file này tên là notificationsSlice NHƯNG chúng ta sẽ export một thứ tên là Reducer, mọi người lưu ý
 export const notificationsReducer = notificationsSlice.reducer
