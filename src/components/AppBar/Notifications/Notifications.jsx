@@ -37,10 +37,12 @@ function Notifications() {
   const open = Boolean(anchorEl)
   const handleClickNotificationIcon = (event) => {
     setAnchorEl(event.currentTarget)
-
-    // Khi click vào phần icon thông báo thì set lại trạng thái của biến newNotification về false
-    // setNewNotification(false) // XÓA DÒNG NÀY, chuyển sang dùng Redux bên dưới
-    dispatch(setHasNewNotification(false)) // Dùng Redux để reset chấm đỏ
+    // Lưu các notification PENDING vào localStorage khi user mở menu
+    const readIds = notifications
+      .filter(n => n.boardInvitation.status === 'PENDING')
+      .map(n => n._id)
+    localStorage.setItem('readNotifications', JSON.stringify(readIds))
+    dispatch(setHasNewNotification(false))
   }
   const handleClose = () => {
     setAnchorEl(null)
@@ -62,8 +64,12 @@ function Notifications() {
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(fetchInvitationsAPI()).then(res => {
-      // Nếu có notification PENDING, set chấm đỏ
-      if (res.payload && res.payload.some(n => n.boardInvitation.status === 'PENDING')) {
+      const readIds = JSON.parse(localStorage.getItem('readNotifications') || '[]')
+      // Nếu có notification PENDING chưa đọc, set chấm đỏ
+      if (
+        res.payload &&
+      res.payload.some(n => n.boardInvitation.status === 'PENDING' && !readIds.includes(n._id))
+      ) {
         dispatch(setHasNewNotification(true))
       }
     })
