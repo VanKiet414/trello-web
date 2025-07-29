@@ -4,7 +4,7 @@ import LoginForm from './LoginForm'
 import RegisterForm from './RegisterForm'
 import { useSelector } from 'react-redux'
 import { selectCurrentUser } from '~/redux/user/userSlice'
-import loginBg from '~/assets/auth/login-register-bg.jpg'
+import loginBg from '~/assets/auth/login-register-bg.webp'
 
 function Auth() {
   const location = useLocation()
