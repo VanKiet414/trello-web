@@ -41,7 +41,6 @@ function BoardBar({ board }) {
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         <Tooltip title={board?.description}>
           <Chip
-            aria-label="Board title"
             sx={MENU_STYLE}
             icon={<DashboardIcon />}
             label={board?.title}
@@ -49,49 +48,29 @@ function BoardBar({ board }) {
           />
         </Tooltip>
         <Chip
-          aria-label="Board type"
           sx={MENU_STYLE}
           icon={<VpnLockIcon />}
           label={capitalizeFirstLetter(board?.type)}
           clickable
         />
-        {/* Các chip chức năng chưa có, disable và tooltip "Coming soon" để UX tốt hơn */}
-        <Tooltip title="Coming soon">
-          <span>
-            <Chip
-              aria-label="Add To Google Drive"
-              sx={MENU_STYLE}
-              icon={<AddToDriveIcon />}
-              label="Add To Google Drive"
-              clickable={false}
-              disabled
-            />
-          </span>
-        </Tooltip>
-        <Tooltip title="Coming soon">
-          <span>
-            <Chip
-              aria-label="Automation"
-              sx={MENU_STYLE}
-              icon={<BoltIcon />}
-              label="Automation"
-              clickable={false}
-              disabled
-            />
-          </span>
-        </Tooltip>
-        <Tooltip title="Coming soon">
-          <span>
-            <Chip
-              aria-label="Filters"
-              sx={MENU_STYLE}
-              icon={<FilterListIcon />}
-              label="Filters"
-              clickable={false}
-              disabled
-            />
-          </span>
-        </Tooltip>
+        <Chip
+          sx={MENU_STYLE}
+          icon={<AddToDriveIcon />}
+          label="Add To Google Drive"
+          clickable
+        />
+        <Chip
+          sx={MENU_STYLE}
+          icon={<BoltIcon />}
+          label="Automation"
+          clickable
+        />
+        <Chip
+          sx={MENU_STYLE}
+          icon={<FilterListIcon />}
+          label="Filters"
+          clickable
+        />
       </Box>
 
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
