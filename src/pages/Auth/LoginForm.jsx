@@ -24,16 +24,18 @@ import { loginUserAPI } from '~/redux/user/userSlice'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
-
 function LoginForm() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const { register, handleSubmit, formState: { errors } } = useForm()
+  // Lấy các hàm và state từ react-hook-form
+  const { register, handleSubmit, formState } = useForm()
+  const { errors, isSubmitting } = formState
   let [searchParams] = useSearchParams()
   const registeredEmail = searchParams.get('registeredEmail')
   const verifiedEmail = searchParams.get('verifiedEmail')
 
+  // Hàm submit login
   const submitLogIn = (data) => {
     const { email, password } = data
 
@@ -44,11 +46,12 @@ function LoginForm() {
       // console.log(res)
       // Đoạn này phải kiểm tra không có lỗi (login thành công) thì mới redirect về route /
       if (!res.error) navigate('/')
+      else toast.error(res.error?.message || 'Login failed!')
     })
   }
 
   return (
-    <form onSubmit={handleSubmit(submitLogIn)}>
+    <form onSubmit={handleSubmit(submitLogIn)} autoComplete="on">
       <Zoom in={true} style={{ transitionDelay: '200ms' }}>
         <MuiCard sx={{ minWidth: 380, maxWidth: 380, marginTop: '6em' }}>
           <Box sx={{
@@ -67,7 +70,7 @@ function LoginForm() {
             {verifiedEmail &&
               <Alert severity="success" sx={{ '.MuiAlert-message': { overflow: 'hidden' } }}>
                 Your email&nbsp;
-                <Typography variant="span" sx={{ fontWeight: 'bold', '&:hover': { color: '#fdba26' } }}>{verifiedEmail}</Typography>
+                <Typography component="span" sx={{ fontWeight: 'bold', '&:hover': { color: '#fdba26' } }}>{verifiedEmail}</Typography>
                 &nbsp;has been verified.<br />Now you can login to enjoy our services! Have a good day!
               </Alert>
             }
@@ -75,7 +78,7 @@ function LoginForm() {
             {registeredEmail &&
               <Alert severity="info" sx={{ '.MuiAlert-message': { overflow: 'hidden' } }}>
                 An email has been sent to&nbsp;
-                <Typography variant="span" sx={{ fontWeight: 'bold', '&:hover': { color: '#fdba26' } }}>{registeredEmail}</Typography>
+                <Typography component="span" sx={{ fontWeight: 'bold', '&:hover': { color: '#fdba26' } }}>{registeredEmail}</Typography>
                 <br />Please check and verify your account before logging in!
               </Alert>
             }
@@ -84,6 +87,7 @@ function LoginForm() {
             <Box sx={{ marginTop: '1em' }}>
               <TextField
                 // autoComplete="nope"
+                autoComplete="email"
                 autoFocus
                 fullWidth
                 label="Enter Email..."
@@ -103,6 +107,7 @@ function LoginForm() {
 
             <Box sx={{ marginTop: '1em' }}>
               <TextField
+                autoComplete="current-password"
                 fullWidth
                 label="Enter Password..."
                 type="password"
@@ -127,6 +132,7 @@ function LoginForm() {
               color="primary"
               size="large"
               fullWidth
+              disabled={isSubmitting} // Disable khi đang submit để tránh double submit
             >
               Login
             </Button>
