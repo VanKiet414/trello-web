@@ -18,5 +18,8 @@ export default defineConfig({
     alias: [
       { find: '~', replacement: '/src' }
     ]
+  },
+  build: {
+    target: 'es2017'
   }
 })
