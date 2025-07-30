@@ -13,7 +13,7 @@ export default defineConfig({
     react(),
     svgr()
   ],
-  base: '/',
+  base: '/', // Đường dẫn gốc cho các tài nguyên tĩnh
   resolve: {
     alias: [
       { find: '~', replacement: '/src' }
