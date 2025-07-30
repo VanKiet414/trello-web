@@ -29,7 +29,7 @@ function LoginForm() {
   const navigate = useNavigate()
 
   // Lấy các hàm và state từ react-hook-form
-  const { register, handleSubmit, formState } = useForm()
+  const { register, handleSubmit, formState, reset } = useForm()
   const { errors, isSubmitting } = formState
   let [searchParams] = useSearchParams()
   const registeredEmail = searchParams.get('registeredEmail')
@@ -45,13 +45,16 @@ function LoginForm() {
     ).then(res => {
       // console.log(res)
       // Đoạn này phải kiểm tra không có lỗi (login thành công) thì mới redirect về route /
-      if (!res.error) navigate('/')
+      if (!res.error) {
+        reset() // Clear form khi login thành công
+        navigate('/')
+      }
       else toast.error(res.error?.message || 'Login failed!')
     })
   }
 
   return (
-    <form onSubmit={handleSubmit(submitLogIn)} autoComplete="on">
+    <form onSubmit={handleSubmit(submitLogIn)} autoComplete="on" aria-label="Login form">
       <Zoom in={true} style={{ transitionDelay: '200ms' }}>
         <MuiCard sx={{ minWidth: 380, maxWidth: 380, marginTop: '6em' }}>
           <Box sx={{
@@ -94,6 +97,7 @@ function LoginForm() {
                 type="text"
                 variant="outlined"
                 error={!!errors['email']}
+                disabled={isSubmitting}
                 {...register('email', {
                   required: FIELD_REQUIRED_MESSAGE,
                   pattern: {
@@ -113,6 +117,7 @@ function LoginForm() {
                 type="password"
                 variant="outlined"
                 error={!!errors['password']}
+                disabled={isSubmitting}
                 {...register('password', {
                   required: FIELD_REQUIRED_MESSAGE,
                   pattern: {
@@ -133,6 +138,7 @@ function LoginForm() {
               size="large"
               fullWidth
               disabled={isSubmitting} // Disable khi đang submit để tránh double submit
+              aria-busy={isSubmitting}
             >
               Login
             </Button>

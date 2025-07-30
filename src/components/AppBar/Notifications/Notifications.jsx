@@ -68,7 +68,7 @@ function Notifications() {
       // Nếu có notification PENDING chưa đọc, set chấm đỏ
       if (
         res.payload &&
-      res.payload.some(n => n.boardInvitation.status === 'PENDING' && !readIds.includes(n._id))
+        res.payload.some(n => n.boardInvitation.status === 'PENDING' && !readIds.includes(n._id))
       ) {
         dispatch(setHasNewNotification(true))
       }
@@ -113,6 +113,7 @@ function Notifications() {
     <Box>
       <Tooltip title="Notifications">
         <Badge
+          aria-label="Open notifications menu"
           color="warning"
           // variant="none"
           // variant="dot"
@@ -137,6 +138,11 @@ function Notifications() {
         open={open}
         onClose={handleClose}
         MenuListProps={{ 'aria-labelledby': 'basic-button-open-notification' }}
+        PaperProps={{
+          style: {
+            maxHeight: 400 // Giới hạn chiều cao menu để tránh tràn màn hình
+          }
+        }}
       >
         {(!notifications || notifications.length === 0) &&
           <MenuItem sx={{ minWidth: 200 }}>You do not have any new notifications.</MenuItem>
@@ -194,7 +200,7 @@ function Notifications() {
 
                 {/* Thời gian của thông báo */}
                 <Box sx={{ textAlign: 'right' }}>
-                  <Typography variant="span" sx={{ fontSize: '13px' }}>
+                  <Typography component="span" sx={{ fontSize: '13px' }}>
                     {moment(notification.createdAt).format('llll')}
                   </Typography>
                 </Box>

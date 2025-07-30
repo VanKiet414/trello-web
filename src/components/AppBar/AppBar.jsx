@@ -36,7 +36,7 @@ function AppBar() {
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         <Link to='/boards'>
           <Tooltip title='Board List'>
-            <AppsIcon sx={{ color: 'white', verticalAlign: 'middle' }}/>
+            <AppsIcon sx={{ color: 'white', verticalAlign: 'middle' }} aria-label="Board List"/>
           </Tooltip>
         </Link>
 
@@ -44,8 +44,8 @@ function AppBar() {
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
             {/* <SvgIcon component={TrelloIcon} fontSize='small' inheritViewBox sx={{ color: 'white' }} /> */}
             <img src={vinLogo} alt="Logo" style={{ height: 80, width: 80, objectFit: 'contain' }} />
-            <Typography variant="span" sx={{ fontSize: '1rem', fontWeight: 'bold', color: 'white' }}>
-            Vingroup
+            <Typography component="span" sx={{ fontSize: '1rem', fontWeight: 'bold', color: 'white' }}>
+              Vingroup
             </Typography>
           </Box>
         </Link>
@@ -63,6 +63,7 @@ function AppBar() {
             }}
             variant="outlined"
             startIcon={<LibraryAddIcon />}
+            aria-label="Create new board"
           >
             Create
           </Button>
@@ -81,7 +82,7 @@ function AppBar() {
         <Notifications />
 
         <Tooltip title="Help">
-          <HelpOutlineIcon sx={{ cursor: 'pointer', color: 'white' }} />
+          <HelpOutlineIcon sx={{ cursor: 'pointer', color: 'white' }} aria-label="Help" />
         </Tooltip>
 
         <Profiles/>

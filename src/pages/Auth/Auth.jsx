@@ -18,18 +18,21 @@ function Auth() {
   }
 
   return (
-    <Box sx={{
-      display: 'flex',
-      flexDirection: 'column',
-      minHeight: '100vh',
-      alignItems: 'center',
-      justifyContent: 'flex-start',
-      background: `url(${loginBg})`,
-      backgroundRepeat: 'no-repeat',
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      boxShadow: 'inset 0 0 0 2000px rgba(0, 0, 0, 0.2)'
-    }}>
+    <Box
+      role="main"
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100vh',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        background: `url(${loginBg})`,
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        boxShadow: 'inset 0 0 0 2000px rgba(0, 0, 0, 0.2)'
+      }}
+    >
       {isLogin && <LoginForm />}
       {isRegister && <RegisterForm />}
     </Box>

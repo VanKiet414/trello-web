@@ -30,7 +30,10 @@ function AutoCompleteSearchBoard() {
   // Xử lý việc nhận data nhập vào từ input sau đó gọi API để lấy kết quả về (cần cho vào useDebounceFn như bên dưới)
   const handleInputSearchChange = (event) => {
     const searchValue = event.target?.value
-    if (!searchValue) return
+    if (!searchValue) {
+      setBoards(null) // Clear kết quả khi input rỗng
+      return
+    }
     // console.log(searchValue)
 
     // Dùng createSearchParams của react-router-dom để tạo một cái searchPath chuẩn với q[title] để gọi lên API
@@ -63,6 +66,7 @@ function AutoCompleteSearchBoard() {
 
   return (
     <Autocomplete
+      aria-label="Search board"
       sx={{ width: 220 }}
       id="asynchronous-search-board"
       // Cái text này hiện ra khi boards là null hoặc sau khi đã fetch boards nhưng rỗng - không có kết quả
@@ -98,6 +102,7 @@ function AutoCompleteSearchBoard() {
           {...params}
           label="Type to search..."
           size="small"
+          aria-busy={loading}
           InputProps={{
             ...params.InputProps,
             startAdornment: (

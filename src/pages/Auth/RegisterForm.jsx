@@ -22,7 +22,7 @@ import { registerUserAPI } from '~/apis'
 import { toast } from 'react-toastify'
 
 function RegisterForm() {
-  const { register, handleSubmit, formState: { errors }, watch } = useForm()
+  const { register, handleSubmit, formState: { errors, isSubmitting }, watch, reset } = useForm()
   const navigate = useNavigate()
 
   const submitRegister = (data) => {
@@ -31,12 +31,13 @@ function RegisterForm() {
       registerUserAPI({ email, password }),
       { pending: 'Registration is in progress...' }
     ).then(user => {
+      reset() // Clear form khi đăng ký thành công
       navigate(`/login?registeredEmail=${user.email}`)
     })
   }
 
   return (
-    <form onSubmit={handleSubmit(submitRegister)}>
+    <form onSubmit={handleSubmit(submitRegister)} aria-label="Register form">
       <Zoom in={true} style={{ transitionDelay: '200ms' }}>
         <MuiCard sx={{ minWidth: 380, maxWidth: 380, marginTop: '6em' }}>
           <Box sx={{
@@ -61,6 +62,7 @@ function RegisterForm() {
                 type="text"
                 variant="outlined"
                 error={!!errors['email']}
+                disabled={isSubmitting}
                 {...register('email', {
                   required: FIELD_REQUIRED_MESSAGE,
                   pattern: {
@@ -79,6 +81,7 @@ function RegisterForm() {
                 type="password"
                 variant="outlined"
                 error={!!errors['password']}
+                disabled={isSubmitting}
                 {...register('password', {
                   required: FIELD_REQUIRED_MESSAGE,
                   pattern: {
@@ -97,6 +100,7 @@ function RegisterForm() {
                 type="password"
                 variant="outlined"
                 error={!!errors['password_confirmation']}
+                disabled={isSubmitting}
                 {...register('password_confirmation', {
                   validate: (value) => {
                     if (value === watch('password')) return true
@@ -115,6 +119,8 @@ function RegisterForm() {
               color="primary"
               size="large"
               fullWidth
+              disabled={isSubmitting}
+              aria-busy={isSubmitting}
             >
               Register
             </Button>

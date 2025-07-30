@@ -27,12 +27,16 @@ function BoardUserGroup({ boardUsers = [], limit = 6 }) {
             <Tooltip title={user?.displayName} key={index}>
               <Avatar
                 sx={{ width: 34, height: 34, cursor: 'pointer' }}
-                alt="vankietdev"
+                alt={user?.displayName || 'Board member'}
+                aria-label={user?.displayName || 'Board member'}
                 src={user?.avatar}
-              />
+              >
+                {user?.displayName?.[0] || 'U'}
+              </Avatar>
             </Tooltip>
           )
         }
+        return null
       })}
 
       {/* Nếu số lượng users nhiều hơn limit thì hiện thêm +number */}
@@ -41,6 +45,7 @@ function BoardUserGroup({ boardUsers = [], limit = 6 }) {
           <Box
             aria-describedby={popoverId}
             onClick={handleTogglePopover}
+            tabIndex={0}
             sx={{
               width: 36,
               height: 36,
@@ -73,9 +78,12 @@ function BoardUserGroup({ boardUsers = [], limit = 6 }) {
             <Tooltip title={user?.displayName} key={index}>
               <Avatar
                 sx={{ width: 34, height: 34, cursor: 'pointer' }}
-                alt="vankietdev"
+                alt={user?.displayName || 'Board member'}
+                aria-label={user?.displayName || 'Board member'}
                 src={user?.avatar}
-              />
+              >
+                {user?.displayName?.[0] || 'U'}
+              </Avatar>
             </Tooltip>
           )}
         </Box>

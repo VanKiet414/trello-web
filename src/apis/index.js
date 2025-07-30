@@ -24,6 +24,7 @@ import { toast } from 'react-toastify'
 
 export const updateBoardDetailsAPI = async (boardId, updateData) => {
   const response = await authorizedAxiosInstance.put(`${API_ROOT}/v1/boards/${boardId}`, updateData)
+  toast.success('Board updated successfully!') // Nếu muốn UX tốt hơn, có thể mở toast này
   return response.data
 }
 
@@ -40,6 +41,7 @@ export const createNewColumnAPI = async (newColumnData) => {
 
 export const updateColumnDetailsAPI = async (columnId, updateData) => {
   const response = await authorizedAxiosInstance.put(`${API_ROOT}/v1/columns/${columnId}`, updateData)
+  toast.success('Column updated successfully!') // Nếu muốn UX tốt hơn, có thể mở toast này
   return response.data
 }
 
@@ -89,6 +91,7 @@ export const createNewBoardAPI = async (data) => {
 
 export const updateCardDetailsAPI = async (cardId, updateData) => {
   const response = await authorizedAxiosInstance.put(`${API_ROOT}/v1/cards/${cardId}`, updateData)
+  toast.success('Card updated successfully!') // Nếu muốn UX tốt hơn, có thể mở toast này
   return response.data
 }
 

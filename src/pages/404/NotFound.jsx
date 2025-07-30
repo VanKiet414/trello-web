@@ -37,7 +37,7 @@ function NotFound() {
         <Typography variant="h1" sx={{ fontSize: '100px', fontWeight: 800 }}>404</Typography>
         <Typography sx={{ fontSize: '18px !important', lineHeight: '25px', fontWeight: 400, maxWidth: '350px', textAlign: 'center' }}>
           LOST IN&nbsp;
-          <Typography variant="span" sx={{
+          <Typography component="span" sx={{
             position: 'relative',
             '&:after': {
               position: 'absolute',
@@ -50,9 +50,9 @@ function NotFound() {
           }}>
             &nbsp;SPACE&nbsp;
           </Typography>
-          &nbsp;<Typography variant="span" sx={{ color: '#fdba26', fontWeight: 500 }}>VanKietDev</Typography>?<br />Hmm, looks like that page doesn&apos;t exist.
+          &nbsp;<Typography component="span" sx={{ color: '#fdba26', fontWeight: 500 }}>VanKietDev</Typography>?<br />Hmm, looks like that page doesn&apos;t exist.
         </Typography>
-        <Box sx={{ width: '390px', height: '390px', position: 'relative' }}>
+        <Box sx={{ width: { xs: '220px', sm: '320px', md: '390px' }, height: { xs: '220px', sm: '320px', md: '390px' }, position: 'relative' }}>
           <SvgIcon component={AstronautSvg} inheritViewBox sx={{
             width: '50px', height: '50px', position: 'absolute', top: '20px', right: '25px',
             '@keyframes spinAround': {
@@ -68,6 +68,7 @@ function NotFound() {
           <Button
             variant="outlined"
             startIcon={<HomeIcon />}
+            aria-label="Go to homepage"
             sx={{
               display: 'flex',
               alignItems: 'center',
